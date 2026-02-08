@@ -75,10 +75,12 @@ Our code is built upon [HARL](https://github.com/PKU-MARL/HARL), [TDMPC2](https:
 If you find our research helpful and would like to reference it in your work, please consider the following citations:
 
 ```bibtex
-@inproceedings{zhao2025seqwm,
-  title     = {Empowering Multi-Robot Cooperation via Sequential World Models},
-  author    = {Zhao, Zijie and Guo, Honglei and Chen, Shengqian and Xu, Kaixuan and Jiang, Bo and Zhu, Yuanheng and Zhao, Dongbin},
-  booktitle = {arXiv preprint},
-  year      = {2025}
+@inproceedings{
+    zhao2026seqwm,
+    title     = {Empowering Multi-Robot Cooperation via Sequential World Models},
+    author    = {Zhao, Zijie and Guo, Honglei and Chen, Shengqian and Xu, Kaixuan and Jiang, Bo and Zhu, Yuanheng and Zhao, Dongbin},
+    booktitle={The Fourteenth International Conference on Learning Representations},
+    year={2026},
+    url={https://openreview.net/forum?id=IvUM6UwYCJ}
 }
 ```
