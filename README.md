@@ -1,4 +1,4 @@
-# SeqWM: Empowering Multi-Robot Cooperation via Sequential World Models
+# SeqWM: Empowering Multi-Robot Cooperation via Sequential World Models (ICLR'26)
 
 The official implementation of the paper [Empowering Multi-Robot Cooperation via Sequential World Models](https://https://arxiv.org/abs/2509.13095).
 
@@ -78,9 +78,9 @@ If you find our research helpful and would like to reference it in your work, pl
 @inproceedings{
     zhao2026seqwm,
     title     = {Empowering Multi-Robot Cooperation via Sequential World Models},
-    author    = {Zhao, Zijie and Guo, Honglei and Chen, Shengqian and Xu, Kaixuan and Jiang, Bo and Zhu, Yuanheng and Zhao, Dongbin},
-    booktitle={The Fourteenth International Conference on Learning Representations},
-    year={2026},
-    url={https://openreview.net/forum?id=IvUM6UwYCJ}
+    author    = {Zijie Zhao and Honglei Guo and Shengqian Chen and Kaixuan Xu and Bo Jiang and Yuanheng Zhu and Dongbin Zhao},,
+    booktitle = {The Fourteenth International Conference on Learning Representations},
+    year      = {2026},
+    url       = {https://openreview.net/forum?id=IvUM6UwYCJ}
 }
 ```
