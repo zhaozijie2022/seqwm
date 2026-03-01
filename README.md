@@ -1,4 +1,4 @@
-# SeqWM: Empowering Multi-Robot Cooperation via Sequential World Models (ICLR'26)
+# SeqWM: Sequential World Model for Multi-Robot Cooperation (ICLR'26)
 
 The official implementation of the paper [Empowering Multi-Robot Cooperation via Sequential World Models](https://openreview.net/forum?id=IvUM6UwYCJ), which published on [ICLR 2026](https://iclr.cc/Conferences/2026).
 
