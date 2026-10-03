@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SeqWM: Empowering Multi-Robot Cooperation via Sequential World Models</title>
+<meta name="description" content="SeqWM, ICLR 2026: sequential world models for multi-robot cooperation, from bimanual manipulation to real-world quadruped teams.">
+<meta property="og:title" content="SeqWM: Empowering Multi-Robot Cooperation via Sequential World Models">
+<meta property="og:description" content="Independent world models. Shared intentions. Coordinated multi-robot behavior. ICLR 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zhaozijie2022.github.io/seqwm/">
+<meta property="og:image" content="https://zhaozijie2022.github.io/seqwm/img/method.jpg">
+<meta name="theme-color" content="#2176bd">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<style>
+:root {
+  --ink: #263636;
+  --text: #4e5a5a;
+  --muted: #6d7777;
+  --line: #dfe4e2;
+  --soft: #f5f7f6;
+  --accent: #b54a35;
+  --max: 1040px;
+  --body-size: clamp(17px, calc(16.5px + .14vw), 18px);
+  --caption-size: clamp(14px, calc(13.5px + .14vw), 15px);
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0;
+  color: var(--text);
+  background: #fff;
+  font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Helvetica Neue", Arial, sans-serif;
+  font-size: var(--body-size);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+img, video { display: block; max-width: 100%; }
+figure, p, h1, h2, h3, blockquote { margin: 0; }
+.container { width: min(var(--max), calc(100% - clamp(32px, calc(24px + 2.2vw), 48px))); margin-inline: auto; }
+.stack { display: flex; flex-direction: column; gap: 24px; }
+
+.site-header {
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, .97);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.header-inner { min-height: 64px; padding-block: 14px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(7px, calc(-1.4px + 2.34vw), 24px); }
+.wordmark { display: inline-flex; align-items: center; gap: 9px; color: var(--ink); font-size: 22px; font-weight: 700; letter-spacing: -.04em; text-decoration: none; }
+.wordmark-logo { width: 28px; height: 28px; flex: none; }
+.project-name { display: inline-flex; align-items: center; gap: .22em; vertical-align: bottom; }
+.title-logo { width: 1em; height: 1em; flex: none; }
+nav { display: flex; flex-wrap: wrap; gap: clamp(12px, calc(8px + 1.1vw), 20px) clamp(16px, calc(14px + .55vw), 20px); font-size: clamp(13px, calc(12.5px + .137vw), 14px); }
+nav a { text-decoration: none; }
+nav a:hover { color: var(--accent); }
+
+.hero { border-bottom: 1px solid var(--line); }
+.hero-inner { padding: clamp(58px, calc(49px + 2.5vw), 76px) 0 clamp(54px, calc(47px + 1.93vw), 68px); text-align: center; }
+h1 { max-width: 920px; margin: 0 auto; color: var(--ink); font-size: clamp(26px, 4vw, 44px); line-height: 1.12; letter-spacing: -.045em; }
+.project-name, .wordmark { color: #2176bd; }
+.authors { margin-top: 22px; color: #2176bd; font-size: clamp(15px, 1.6vw, 18px); line-height: 1.8; }
+.author { display: inline-block; white-space: nowrap; font-weight: 600; }
+.author a { color: inherit; text-decoration: none; }
+.author a:hover, .author a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+.authors sup { margin-left: 2px; color: var(--text); font-size: .65em; }
+.affiliations { margin-top: 14px; color: var(--text); font-size: clamp(13px, 1.4vw, 15px); line-height: 1.65; }
+.affiliations p { margin: 0; }
+.author-note { margin-top: 10px; color: var(--muted); font-size: 13px; }
+.hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 25px; }
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding: 9px 19px;
+  color: #fff;
+  background: #363636;
+  border: 0;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 400;
+  text-decoration: none;
+  transition: background .2s ease, transform .2s ease;
+}
+.button:hover { color: #fff; background: #202020; transform: translateY(-1px); }
+.button-icon { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.button-icon-brand { fill: currentColor; stroke: none; }
+
+.section { padding: clamp(48px, calc(43px + 1.38vw), 58px) 0; border-bottom: 1px solid var(--line); }
+.section-heading { display: flex; flex-direction: column; gap: 7px; }
+.eyebrow { color: var(--accent); font-size: 12px; letter-spacing: .08em; font-weight: 700; }
+h2 { color: var(--ink); font-size: clamp(17px, 2.2vw, 26px); line-height: 1.15; letter-spacing: -.035em; }
+h3 { color: var(--ink); font-size: clamp(16px, 1.7vw, 20px); line-height: 1.25; }
+
+.abstract-copy, .teaser-figure { width: 100%; max-width: 880px; margin-inline: auto; }
+.teaser-figure img { width: 100%; height: auto; border: 1px solid var(--line); }
+figcaption { margin-top: 10px; color: var(--text); font-size: var(--caption-size); line-height: 1.55; }
+.abstract-copy { display: flex; flex-direction: column; gap: 14px; text-align: center; }
+.abstract-copy h2 { text-align: center; }
+.abstract-copy blockquote { max-width: 850px; margin-inline: 0; align-self: flex-start; padding: 7px 16px; color: var(--ink); border-left: 3px solid var(--line); font-size: var(--body-size); line-height: 1.65; text-align: left; }
+.abstract-copy p { max-width: 880px; margin-inline: auto; font-size: var(--body-size); line-height: 1.75; text-align: left; }
+
+.method-section { padding-block: clamp(38px, calc(34.5px + .965vw), 45px); }
+.method-wrap { max-width: 880px; display: flex; flex-direction: column; align-items: stretch; gap: 16px; }
+.method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0; margin: 0; list-style: none; }
+.method-grid li { min-height: 0; padding: 14px 15px 12px; background: var(--soft); border: 1px solid var(--line); border-radius: 5px; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.method-grid p { font-size: var(--caption-size); line-height: 1.5; }
+.module-tag { margin-top: auto; color: var(--muted); font-size: 11px; letter-spacing: .01em; }
+.math { color: var(--ink); font-family: inherit; font-style: normal; letter-spacing: 0; }
+.equation { padding: 9px 13px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; border-left: 3px solid var(--accent); background: var(--soft); }
+.equation span, .equation small { color: var(--muted); font-size: 11px; letter-spacing: .01em; }
+.equation strong { font-size: 19px; font-weight: 500; font-style: normal; }
+.method-figure { width: 100%; }
+.method-figure img { display: block; width: 100%; height: auto !important; aspect-ratio: auto; object-fit: contain; }
+
+.demo-group { display: flex; flex-direction: column; gap: 11px; }
+#experiments > .container > figure { width: min(100%, 920px); margin-inline: auto; }
+#method .figure-link { width: min(100%, 920px); margin-inline: auto; }
+.video-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 15px; }
+.video-grid.simulation-demos { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.demo video, .simulation-item video, .humanoid-media video { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: #111; border-radius: 3px; }
+.demo figcaption, .simulation-item figcaption { color: var(--ink); }
+
+.simulation-section .section-heading { margin-bottom: 1px; }
+.simulation-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 15px; }
+.simulation-item { min-width: 0; }
+.humanoid-feature { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 32px; }
+.humanoid-copy { display: flex; flex-direction: column; gap: 12px; text-align: left; }
+.humanoid-stat { display: flex; align-items: center; gap: 12px; margin-top: 2px; }
+.humanoid-stat strong { color: var(--ink); font-size: 31px; line-height: 1; }
+.humanoid-stat strong span { color: var(--accent); font-size: .6em; }
+.humanoid-stat > span { color: var(--muted); font-size: 12px; line-height: 1.25; text-align: left; }
+.small-note { color: var(--muted); font-size: 12px; line-height: 1.45; }
+
+pre { margin: 0; overflow-x: auto; padding: 18px 20px; color: var(--ink); background: var(--soft); border: 1px solid var(--line); font: 13px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre; }
+.citation-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+.citation-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.copy-citation { display: inline-flex; align-items: center; gap: 6px; padding: 6px 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; }
+.copy-citation:hover { color: var(--ink); }
+.copy-citation .button-icon { width: 16px; height: 16px; }
+.copy-citation:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.site-footer { padding: 24px 0 34px; }
+.footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px; color: var(--muted); font-size: 13px; }
+.footer-inner span { color: var(--ink); font-weight: 700; }
+.footer-inner a { text-decoration: none; }
+
+:root { --accent: #2176bd; }
+.hero-inner { padding-bottom: 48px; }
+.venue { display: inline-block; margin-bottom: 20px; padding: 4px 14px; border-radius: 20px; background: #edf5fb; color: #216ba7; font-size: 14px; font-weight: 600; letter-spacing: .04em; }
+h1 { max-width: 940px; }
+.hero-summary { max-width: 720px; margin: 22px auto 0; }
+.section-heading { gap: 10px; }
+.method-wrap, .abstract-copy { max-width: 1040px; }
+.abstract-copy p { max-width: 960px; }
+.demo video { aspect-ratio: 4 / 3; object-fit: contain; background: #f2f4f5; }
+.real-grid video { aspect-ratio: 16 / 9; }
+.demo figcaption { font-size: 15px; }
+.demo-group + .demo-group { margin-top: 18px; }
+.figure-link { display: block; }
+.figure-link img { width: 100%; height: auto; }
+.figure-note { color: var(--muted); font-size: 13px; }
+.behavior-layout { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.skip-link { position: absolute; top: -100px; left: 16px; background: white; padding: 12px; z-index: 30; }
+.skip-link:focus { top: 8px; }
+a:focus-visible, button:focus-visible, video:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+@media (max-width: 1000px) { .video-grid.simulation-demos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .video-grid, .video-grid.simulation-demos { grid-template-columns: repeat(2, minmax(0, 1fr)); } .method-grid { grid-template-columns: 1fr; } .header-inner { justify-content: center; } nav { justify-content: center; } html { scroll-padding-top: 110px; } }
+@media (max-width: 480px) { .video-grid, .video-grid.simulation-demos { grid-template-columns: 1fr; } h1 { font-size: 30px; } .hero-inner { padding-top: 40px; } .authors { font-size: 16px; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; } }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<header class="site-header"><div class="container header-inner"><a class="wordmark" href="#top"><img class="wordmark-logo" src="img/favicon.svg" alt="" width="28" height="28">SeqWM</a><nav aria-label="Main navigation"><a href="#abstract">Abstract</a><a href="#method">Method</a><a href="#experiments">Experiments</a><a href="#behaviors">Behaviors</a><a href="#bibtex">Citation</a></nav></div></header>
+<main id="main">
+<section class="hero" id="top"><div class="container hero-inner">
+<p class="venue">ICLR 2026</p>
+<h1><span class="project-name"><img class="title-logo" src="img/favicon.svg" alt="" width="44" height="44">SeqWM</span>: Empowering Multi-Robot Cooperation via Sequential World Models</h1>
+<div class="authors" aria-label="Authors"><span class="author"><a href="https://zhaozijie2022.github.io/" target="_blank" rel="noopener">Zijie Zhao</a><sup>1,2</sup></span>, <span class="author"><a href="https://zhejing672.github.io/Honglei_Guo.github.io/" target="_blank" rel="noopener">Honglei Guo</a><sup>2</sup></span>, <span class="author"><a href="https://github.com/ShengqianChen" target="_blank" rel="noopener">Shengqian Chen</a><sup>2</sup></span>, <span class="author"><a href="https://scholar.google.com/citations?user=16ELLxgAAAAJ" target="_blank" rel="noopener">Kaixuan Xu</a><sup>1,2</sup></span>, <span class="author"><a href="https://openreview.net/profile?id=~Bo_Jiang29" target="_blank" rel="noopener">Bo Jiang</a><sup>2,1</sup></span>, <span class="author"><a href="https://scholar.google.com/citations?user=AMnkOiIAAAAJ" target="_blank" rel="noopener">Yuanheng Zhu</a><sup>2,1,*</sup></span>, <span class="author"><a href="https://scholar.google.com/citations?user=RxvYlNQAAAAJ" target="_blank" rel="noopener">Dongbin Zhao</a><sup>2,1</sup></span></div>
+<div class="affiliations"><p><sup>1</sup> School of Artificial Intelligence, University of Chinese Academy of Sciences</p><p><sup>2</sup> SKL-MAIS, Institute of Automation, Chinese Academy of Sciences</p></div>
+<p class="author-note"><sup>*</sup> Corresponding author.</p>
+<div class="hero-actions">
+          <a class="button" href="https://github.com/zhaozijie2022/seqwm" target="_blank" rel="noopener">
+            <svg class="button-icon button-icon-brand" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            <span>Code</span>
+          </a>
+          <a class="button" href="https://arxiv.org/abs/2509.13095">
+            <svg class="button-icon button-icon-brand" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.8423 0a1.0037 1.0037 0 0 0-.922.6078c-.1536.3687-.0438.6275.2938 1.1113l6.9185 8.3597-1.0223 1.1058a1.0393 1.0393 0 0 0 .003 1.4229l1.2292 1.3135-5.4391 6.4444c-.2803.299-.4538.823-.2971 1.1986a1.0253 1.0253 0 0 0 .9585.635.9133.9133 0 0 0 .6891-.3405l5.783-6.126 7.4902 8.0051a.8527.8527 0 0 0 .6835.2597.9575.9575 0 0 0 .8777-.6138c.1577-.377-.017-.7502-.306-1.1407l-7.0518-8.3418 1.0632-1.13a.9626.9626 0 0 0 .0089-1.3165L4.6336.4639s-.3733-.4535-.768-.463zm0 .272h.0166c.2179.0052.4874.2715.5644.3639l.005.006.0052.0055 10.169 10.9905a.6915.6915 0 0 1-.0072.945l-1.0666 1.133-1.4982-1.7724-8.5994-10.39c-.3286-.472-.352-.6183-.2592-.841a.7307.7307 0 0 1 .6704-.4401Zm14.341 1.5701a.877.877 0 0 0-.6554.2418l-5.6962 6.1584 1.6944 1.8319 5.3089-6.5138c.3251-.4335.479-.6603.3247-1.0292a1.1205 1.1205 0 0 0-.9763-.689zm-7.6557 12.2823 1.3186 1.4135-5.7864 6.1295a.6494.6494 0 0 1-.4959.26.7516.7516 0 0 1-.706-.4669c-.1119-.2682.0359-.6864.2442-.9083l.0051-.0055.0047-.0055z"/></svg>
+            <span>arXiv</span>
+          </a>
+          <a class="button" href="seqwm.pdf">
+            <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2h10l4 4v16H5z"/><path d="M15 2v5h4"/><path d="M8 18c3-4 5-9 4-10-2-1-1 5 2 7 4 2 4-2 0-1-4 0-8 2-7 4 0 1 1 0 1 0Z" stroke-width="1.2"/></svg>
+            <span>PDF</span>
+          </a>
+
+          <a class="button" href="https://openreview.net/forum?id=IvUM6UwYCJ" target="_blank" rel="noopener">
+            <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <span>OpenReview</span>
+          </a>
+        </div>
+<p class="hero-summary">Plan with your teammates’ predictions.<br>Sequential world models turn shared intentions into coordinated actions.</p>
+</div></section>
+<section class="section" id="abstract"><div class="container abstract-copy"><h2>Abstract</h2><p>Model-based reinforcement learning (MBRL) has achieved remarkable success in robotics due to its high sample efficiency and planning capability. However, extending MBRL to physical multi-robot cooperation remains challenging due to the complexity of joint dynamics. To address this challenge, we propose the Sequential World Model (SeqWM), a novel framework that integrates the sequential paradigm into multi-robot MBRL. SeqWM employs independent, autoregressive agent-wise world models to represent joint dynamics, where each agent generates its future trajectory and plans its actions based on the predictions of its predecessors. This design lowers modeling complexity and enables the emergence of advanced cooperative behaviors through explicit intention sharing. Experiments on Bi-DexHands and Multi-Quadruped demonstrate that SeqWM outperforms existing state-of-the-art model-based and model-free baselines in both overall performance and sample efficiency, while exhibiting advanced cooperative behaviors such as predictive adaptation, temporal alignment, and role division. Furthermore, SeqWM has been successfully deployed on physical quadruped robots, validating its effectiveness in real-world multi-robot systems.</p></div></section>
+<section class="section" id="method"><div class="container method-wrap"><div class="section-heading"><p class="eyebrow">Method</p><h2>Sequential prediction. Cooperative planning.</h2><p>Decompose complex joint dynamics into independent agent-wise world models, connected through predictions of future trajectories.</p></div>
+<figure><a class="figure-link" href="img/method.jpg" target="_blank" rel="noopener" aria-label="Open full-resolution figure: SeqWM framework for sequential world modeling and cooperative action planning"><img width="5299" height="1600" src="img/method.jpg" alt="SeqWM framework for sequential world modeling and cooperative action planning" loading="lazy"></a><figcaption><strong>SeqWM framework.</strong> Each agent conditions its world model and planning on the predicted trajectories and actions of its predecessors. Click any figure to view it at full resolution.</figcaption></figure>
+<ol class="method-grid"><li><h3>01 · Predict</h3><p>Each agent models its own dynamics, conditioned on the predictions of preceding agents.</p></li><li><h3>02 · Share</h3><p>Predicted trajectories communicate intentions explicitly along the agent sequence.</p></li><li><h3>03 · Plan</h3><p>Each agent performs multi-step lookahead in its own action space while accounting for its teammates.</p></li></ol>
+</div></section>
+<section class="section" id="experiments"><div class="container stack"><div class="section-heading"><p class="eyebrow">Experiments</p><h2>Cooperation across tasks.</h2><p>SeqWM is evaluated on Bi-DexHands and Multi-Quadruped, with deployment on physical Unitree Go2-W robots.</p></div>
+<figure><a class="figure-link" href="img/compare.png" target="_blank" rel="noopener" aria-label="Open full-resolution figure: Learning curves comparing SeqWM against model-based and model-free baselines on Bi-DexHands and Multi-Quad"><img width="2400" height="885" src="img/compare.png" alt="Learning curves comparing SeqWM against model-based and model-free baselines on Bi-DexHands and Multi-Quad" loading="lazy"></a><figcaption><strong>Benchmark performance.</strong> SeqWM improves overall performance and sample efficiency across the evaluated multi-robot tasks.</figcaption></figure>
+<div class="demo-group"><h3>Real-world cooperation</h3><p>Sim-to-real transfer to a team of two Unitree Go2-W robots.</p><div class="video-grid real-grid"><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="Gate · Coordinated passage"><source src="demo/real_go2w/gate.mp4" type="video/mp4"><a href="demo/real_go2w/gate.mp4">View Gate · Coordinated passage demonstration</a></video><figcaption>Gate · Coordinated passage</figcaption></figure><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="PushBox · Cooperative transport"><source src="demo/real_go2w/pushbox.mp4" type="video/mp4"><a href="demo/real_go2w/pushbox.mp4">View PushBox · Cooperative transport demonstration</a></video><figcaption>PushBox · Cooperative transport</figcaption></figure><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="Shepherd · Cooperative herding"><source src="demo/real_go2w/shepherd.mp4" type="video/mp4"><a href="demo/real_go2w/shepherd.mp4">View Shepherd · Cooperative herding demonstration</a></video><figcaption>Shepherd · Cooperative herding</figcaption></figure></div></div>
+<div class="demo-group"><h3>Bi-DexHands</h3><p>Coordinated object transfer and precise bimanual manipulation.</p><div class="video-grid simulation-demos"><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="Over"><source src="demo/sim_dexhands/over.mp4" type="video/mp4"><a href="demo/sim_dexhands/over.mp4">View Over demonstration</a></video><figcaption>Over</figcaption></figure><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="CatchAbreast"><source src="demo/sim_dexhands/catchabreast.mp4" type="video/mp4"><a href="demo/sim_dexhands/catchabreast.mp4">View CatchAbreast demonstration</a></video><figcaption>CatchAbreast</figcaption></figure><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="CatchOver2Underarm"><source src="demo/sim_dexhands/over2underarm.mp4" type="video/mp4"><a href="demo/sim_dexhands/over2underarm.mp4">View CatchOver2Underarm demonstration</a></video><figcaption>CatchOver2Underarm</figcaption></figure><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="BottleCap"><source src="demo/sim_dexhands/bottlecap.mp4" type="video/mp4"><a href="demo/sim_dexhands/bottlecap.mp4">View BottleCap demonstration</a></video><figcaption>BottleCap</figcaption></figure><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="Pen"><source src="demo/sim_dexhands/pen.mp4" type="video/mp4"><a href="demo/sim_dexhands/pen.mp4">View Pen demonstration</a></video><figcaption>Pen</figcaption></figure><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="Scissors"><source src="demo/sim_dexhands/scissors.mp4" type="video/mp4"><a href="demo/sim_dexhands/scissors.mp4">View Scissors demonstration</a></video><figcaption>Scissors</figcaption></figure></div></div>
+<div class="demo-group"><h3>Multi-Quadruped</h3><p>Cooperation among two to five quadruped robots in simulation.</p><div class="video-grid simulation-demos"><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="Gate · 2 robots"><source src="demo/sim_quadruped/gate2.mp4" type="video/mp4"><a href="demo/sim_quadruped/gate2.mp4">View Gate · 2 robots demonstration</a></video><figcaption>Gate · 2 robots</figcaption></figure><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="Gate · 3 robots"><source src="demo/sim_quadruped/gate3.mp4" type="video/mp4"><a href="demo/sim_quadruped/gate3.mp4">View Gate · 3 robots demonstration</a></video><figcaption>Gate · 3 robots</figcaption></figure><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="Gate · 4 robots"><source src="demo/sim_quadruped/gate4.mp4" type="video/mp4"><a href="demo/sim_quadruped/gate4.mp4">View Gate · 4 robots demonstration</a></video><figcaption>Gate · 4 robots</figcaption></figure><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="Gate · 5 robots"><source src="demo/sim_quadruped/gate5.mp4" type="video/mp4"><a href="demo/sim_quadruped/gate5.mp4">View Gate · 5 robots demonstration</a></video><figcaption>Gate · 5 robots</figcaption></figure><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="PushBox"><source src="demo/sim_quadruped/simbox.mp4" type="video/mp4"><a href="demo/sim_quadruped/simbox.mp4">View PushBox demonstration</a></video><figcaption>PushBox</figcaption></figure><figure class="demo"><video controls autoplay muted loop playsinline preload="metadata" aria-label="Shepherd"><source src="demo/sim_quadruped/simsheep.mp4" type="video/mp4"><a href="demo/sim_quadruped/simsheep.mp4">View Shepherd demonstration</a></video><figcaption>Shepherd</figcaption></figure></div></div>
+</div></section>
+<section class="section" id="behaviors"><div class="container stack"><div class="section-heading"><p class="eyebrow">Advanced cooperative behaviors</p><h2>Learning when to lead and when to yield.</h2><p>Shared predictions support predictive adaptation, temporal alignment, and role division.</p></div>
+<figure><a class="figure-link" href="img/behavior-gate5.png" target="_blank" rel="noopener" aria-label="Open full-resolution figure: Five-robot gate-passage trajectories and velocity commands showing sequential passage and predictive yielding"><img width="6910" height="2504" src="img/behavior-gate5.png" alt="Five-robot gate-passage trajectories and velocity commands showing sequential passage and predictive yielding" loading="lazy"></a><figcaption><strong>Coordinated gate passage.</strong> Some agents slow down before the gate while others accelerate and pass first. The wave-like velocity patterns reflect turn-taking and temporal alignment in a constrained environment.</figcaption></figure>
+</div></section>
+<section class="section" id="bibtex"><div class="container stack"><div class="citation-heading"><div class="section-heading"><p class="eyebrow">Citation</p><h2>BibTeX</h2></div><div class="citation-actions"><span id="copy-status" class="small-note" role="status" aria-live="polite"></span><button class="copy-citation" id="copy-citation" type="button" aria-controls="citation-code">
+              <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>Copy BibTeX</span>
+            </button></div></div><pre><code id="citation-code">@inproceedings{zhao2026seqwm,
+  title     = {Empowering Multi-Robot Cooperation via Sequential World Models},
+  author    = {Zijie Zhao and Honglei Guo and Shengqian Chen and Kaixuan Xu and Bo Jiang and Yuanheng Zhu and Dongbin Zhao},
+  booktitle = {The Fourteenth International Conference on Learning Representations},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=IvUM6UwYCJ}
+}</code></pre></div></section>
+</main><footer class="site-footer"><div class="container footer-inner"><span>SeqWM · ICLR 2026</span><a href="#top">Back to top ↑</a></div></footer>
+<script>
+    const copyButton = document.getElementById('copy-citation');
+    const citationCode = document.getElementById('citation-code');
+    const copyStatus = document.getElementById('copy-status');
+
+    function copyWithFallback(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.readOnly = true;
+      textarea.style.cssText = 'position:fixed;left:-9999px;top:0;';
+      document.body.appendChild(textarea);
+      try {
+        textarea.select();
+        textarea.setSelectionRange(0, text.length);
+        return document.execCommand('copy');
+      } catch {
+        return false;
+      } finally {
+        textarea.remove();
+      }
+    }
+
+    copyButton.addEventListener('click', async () => {
+      const text = citationCode.textContent.trim();
+      copyButton.disabled = true;
+      copyStatus.textContent = '';
+      let copied = false;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        }
+      } catch {
+        // Try the local-file / older-browser fallback below.
+      }
+      if (!copied) copied = copyWithFallback(text);
+      copyButton.disabled = false;
+      copyButton.focus({ preventScroll: true });
+      if (copied) {
+        copyStatus.textContent = 'Copied!';
+      } else {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(citationCode);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        copyStatus.textContent = 'Copy unavailable. Press Ctrl+C or ⌘C to copy the selected citation.';
+      }
+    });
+  </script>
+</body></html>

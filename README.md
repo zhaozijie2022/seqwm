@@ -2,12 +2,16 @@
 
 The official implementation of the paper [Empowering Multi-Robot Cooperation via Sequential World Models](https://openreview.net/forum?id=IvUM6UwYCJ), which published on [ICLR 2026](https://iclr.cc/Conferences/2026).
 
+<p align="center">
+  <strong><a href="https://zhaozijie2022.github.io/seqwm/">Project Website</a></strong> · <strong><a href="docs/seqwm.pdf">Paper PDF</a></strong> · <strong><a href="https://arxiv.org/abs/2509.13095">arXiv</a></strong>
+</p>
+
 ---
 ## Overview
 
 To address the difficulty of applying model-based reinforcement learning (MBRL) to multi-robot systems, we propose the **Sequential World Model (SeqWM)**. This framework decomposes complex joint dynamics by using independent, sequentially-structured models for each agent. Planning and decision-making occur via sequential communication, where each agent bases its actions on the predictions of its predecessors. This design enables explicit intention sharing, boosts cooperative performance, and reduces communication complexity. Results show SeqWM outperforms state-of-the-art methods in simulations and real-world deployments, achieving advanced behaviors like predictive adaptation and role division. 
 
-![](assets/img/method.jpg)
+![](docs/img/method.jpg)
 
 ---
 ## ⚙️ Installation
@@ -26,47 +30,39 @@ python examples/train.py --load_config configs/dexhands/ShadowHandBottleCap/seqw
 You can modify the configuration in `configs/{env_name}/{task_name}/seqwm/config.json` to customize the training process.
 
 
-## 📈 Curves
-SeqWM consistently outperforms state-of-the-art baselines in both Bi-DexHands and Multi-Quad environments.
 
-![](./assets/img/compare.png)
-
-## 🎥 Demos
+## 🎥 Demos and Results
 
 ### 👐 Bi-DexHands
 These GIFs showcase SeqWM’s ability to solve complex bimanual manipulation tasks.
 <p align="center">
-  <img src="assets/demo/sim_dexhands/over.gif" alt="Over" width="30%"/>
-  <img src="assets/demo/sim_dexhands/catchabreast.gif" alt="Catch Abreast" width="30%"/>
-  <img src="assets/demo/sim_dexhands/over2underarm.gif" alt="Over2Underarm" width="30%"/>
-  <img src="assets/demo/sim_dexhands/bottlecap.gif" alt="BottleCap" width="30%"/>
-    <img src="assets/demo/sim_dexhands/pen.gif" alt="Pen" width="30%"/>
-    <img src="assets/demo/sim_dexhands/scissors.gif" alt="Scissors" width="30%"/>
+  <img src="docs/demo/sim_dexhands/over.gif" alt="Over" width="15%"/>
+  <img src="docs/demo/sim_dexhands/catchabreast.gif" alt="Catch Abreast" width="15%"/>
+  <img src="docs/demo/sim_dexhands/over2underarm.gif" alt="Over2Underarm" width="15%"/>
+  <img src="docs/demo/sim_dexhands/bottlecap.gif" alt="BottleCap" width="15%"/>
+    <img src="docs/demo/sim_dexhands/pen.gif" alt="Pen" width="15%"/>
+    <img src="docs/demo/sim_dexhands/scissors.gif" alt="Scissors" width="15%"/>
 </p>
 
 ### 🤖 Multi-Quadruped
 In the Multi-Quad environment, SeqWM supports scalable cooperation among 2–5 quadruped robots.
 <p align="center">
-    <img src="assets/demo/sim_quadruped/gate2.gif" alt="Gate-2robots" width="30%"/>
-    <img src="assets/demo/sim_quadruped/gate3.gif" alt="Gate-3robots" width="30%"/>
-    <img src="assets/demo/sim_quadruped/gate4.gif" alt="Gate-4robots" width="30%"/>
-    <img src="assets/demo/sim_quadruped/gate5.gif" alt="Gate-5robots" width="30%"/>
-    <img src="assets/demo/sim_quadruped/simbox.gif" alt="PushBox" width="30%"/>
-    <img src="assets/demo/sim_quadruped/simsheep.gif" alt="Shepherd" width="30%"/>
+    <img src="docs/demo/sim_quadruped/gate2.gif" alt="Gate-2robots" width="15%"/>
+    <img src="docs/demo/sim_quadruped/gate3.gif" alt="Gate-3robots" width="15%"/>
+    <img src="docs/demo/sim_quadruped/gate4.gif" alt="Gate-4robots" width="15%"/>
+    <img src="docs/demo/sim_quadruped/gate5.gif" alt="Gate-5robots" width="15%"/>
+    <img src="docs/demo/sim_quadruped/simbox.gif" alt="PushBox" width="15%"/>
+    <img src="docs/demo/sim_quadruped/simsheep.gif" alt="Shepherd" width="15%"/>
 </p>
 
 ### 🌍 Sim2Real Deployment
 SeqWM has also been successfully deployed on real Unitree Go2-W robots, confirming effective sim-to-real transfer.
 <p align="center">
-    <img src="assets/demo/real_go2w/gate.gif" alt="Gate-2robots" width="30%"/>
-    <img src="assets/demo/real_go2w/pushbox.gif" alt="PushBox" width="30%"/>
-    <img src="assets/demo/real_go2w/shepherd.gif" alt="Shepherd" width="30%"/>
+    <img src="docs/demo/real_go2w/gate.gif" alt="Gate-2robots" width="30%"/>
+    <img src="docs/demo/real_go2w/pushbox.gif" alt="PushBox" width="30%"/>
+    <img src="docs/demo/real_go2w/shepherd.gif" alt="Shepherd" width="30%"/>
 </p>
 
-## 🧩 Advanced Cooperative Behaviors
-As shown below, the robots exhibit predictive yielding and temporal alignment: some agents slow down in front of the gate (observable as troughs in their x-axis velocity commands), while others accelerate and pass through first (peaks in velocity commands). 
-This wave-like pattern across agents reflects turn-taking and priority management, enabling smooth passage without collisions even in highly constrained environments.
-![](./assets/img/behavior-gate5.png)
 
 
 ## 🙏 Acknowledgement & 📜 Citation
@@ -78,7 +74,7 @@ If you find our research helpful and would like to reference it in your work, pl
 @inproceedings{
     zhao2026seqwm,
     title     = {Empowering Multi-Robot Cooperation via Sequential World Models},
-    author    = {Zijie Zhao and Honglei Guo and Shengqian Chen and Kaixuan Xu and Bo Jiang and Yuanheng Zhu and Dongbin Zhao},,
+    author    = {Zijie Zhao, Honglei Guo, Shengqian Chen, Kaixuan Xu, Bo Jiang, Yuanheng Zhu and Dongbin Zhao},
     booktitle = {The Fourteenth International Conference on Learning Representations},
     year      = {2026},
     url       = {https://openreview.net/forum?id=IvUM6UwYCJ}
